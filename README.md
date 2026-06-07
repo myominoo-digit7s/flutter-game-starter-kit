@@ -147,3 +147,7 @@ For deep dives into the architecture and specific features, explore the `docs/` 
 - [Audio Service](docs/features/audio.md)
 - [Localization](docs/features/localization.md)
 - [Settings & Storage](docs/features/settings.md)
+
+## License
+
+This project is open-sourced under the MIT License.
