@@ -1,0 +1,26 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flutter Game Starter Kit",
+  "play": "Play",
+  "settings": "Settings",
+  "shop": "Shop",
+  "leaderboard": "Leaderboard",
+  "sound": "Sound",
+  "music": "Music",
+  "vibration": "Vibration",
+  "language": "Language",
+  "paused": "Paused",
+  "resume": "Resume",
+  "quit": "Quit",
+  "gameOver": "Game Over",
+  "score": "Score: {score}",
+  "@score": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "playAgain": "Play Again",
+  "menu": "Menu"
+}
