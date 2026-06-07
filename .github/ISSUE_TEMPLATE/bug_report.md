@@ -1,11 +1,10 @@
 ---
-
 name: Bug report
 about: Report a bug or issue in the Flutter + Flame Game Starter Kit
 title: "[Bug]: "
 labels: bug
 assignees: ""
--------------
+---
 
 ## Bug Description
 

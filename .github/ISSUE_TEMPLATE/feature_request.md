@@ -1,11 +1,10 @@
 ---
-
 name: Feature request
 about: Suggest an idea or improvement for the Flutter + Flame Game Starter Kit
 title: "[Feature]: "
 labels: enhancement
 assignees: ""
--------------
+---
 
 ## Feature Summary
 
