@@ -19,13 +19,29 @@ Store policies change frequently. Missing a Data Safety declaration or failing t
 **IMPORTANT:** The generated policies and checklists in this module are placeholders. They MUST be reviewed by your legal counsel. The app owner assumes all liability for ensuring the final game complies with local laws (e.g., GDPR, COPPA) and store policies.
 
 ## How to Configure
-Modify `defaultComplianceConfig` in `lib/core/compliance/compliance_config.dart`. Set flags like `usesAdMob`, `usesAnalytics`, `isKidsTargeted`, etc., to match your app's actual behavior.
+Modify `defaultComplianceConfig` in `lib/core/compliance/compliance_config.dart`. The defaults describe the starter's optional ads and telemetry being disabled; set flags like `usesAdMob`, `usesAnalytics`, `isKidsTargeted`, and data collection to match the shipped game's actual behavior.
 
 ## How to Link
 The UI is automatically linked from the Settings screen via the "Privacy & Compliance" button, routing to `/compliance`.
 
-## Release Checklist
-1. Review `ComplianceConfig`.
-2. Generate and finalize your Privacy Policy text.
-3. Host the Privacy Policy online and update the URL.
-4. Complete the Data Safety and Content Rating questionnaires on the app store console based on this module's checklists.
+## Detailed guides
+
+- [Privacy policy](privacy-policy.md) — starter policy placeholder and review
+  notes.
+- [Data safety and app privacy](data-safety.md) — separate Google Play and
+  Apple declaration guidance.
+- [Content ratings](content-rating.md) — Google Play IARC and Apple's
+  App Store Connect age-rating processes.
+- [Children and family policy](children-family-policy.md) — audience review
+  and platform-specific considerations.
+- [Ads disclosure](ads-disclosure.md) — store declarations and ad placement.
+- [Terms of service](terms-of-service.md) — terms placeholders and optional
+  topics to review.
+
+## Release checklist
+
+1. Review `ComplianceConfig` against the finished game's behavior.
+2. Finalize and publish game-specific privacy and terms text where needed.
+3. Complete each platform's current privacy, data safety, audience, and
+   content-rating forms using the actual integrations and SDK behavior.
+4. Recheck platform guidance when the app, SDKs, or policies change.

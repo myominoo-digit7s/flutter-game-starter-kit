@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 
 import '../../../core/game/spawn_timer.dart';
+import '../../../core/game/game_status.dart';
 import '../demo_collector_game.dart';
 import 'collectible_component.dart';
 import 'obstacle_component.dart';
@@ -18,6 +19,7 @@ class SpawnerComponent extends Component
   @override
   void update(double dt) {
     super.update(dt);
+    if (game.status != GameStatus.playing) return;
 
     // Scale spawn rate based on difficulty
     final currentDifficulty = game.difficultyScaler.currentDifficulty;
@@ -27,6 +29,8 @@ class SpawnerComponent extends Component
       _spawnEntity();
     }
   }
+
+  void reset() => _timer.reset();
 
   void _spawnEntity() {
     final screenWidth = game.size.x;

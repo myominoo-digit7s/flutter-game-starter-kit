@@ -13,6 +13,7 @@ import '../core/compliance/compliance_cubit.dart';
 import '../core/telemetry/telemetry_service.dart';
 import '../core/analytics/analytics_observer.dart';
 import '../core/theme/app_theme.dart';
+import '../core/config/app_config.dart';
 import 'router/app_router.dart';
 import 'observers/app_lifecycle_observer.dart';
 
@@ -80,7 +81,7 @@ class _AppState extends State<App> {
         child: BlocBuilder<LocaleCubit, Locale>(
           builder: (context, locale) {
             return MaterialApp.router(
-              title: 'Flutter Game Starter Kit',
+              title: AppConfig.appName,
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: ThemeMode.system, // Placeholder for theme handling

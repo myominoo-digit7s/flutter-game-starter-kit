@@ -6,9 +6,11 @@ void main() {
     test('default config has expected values', () {
       final config = defaultComplianceConfig;
       expect(config.appName, 'Game Starter Kit');
-      expect(config.hasAds, true);
+      expect(config.hasAds, false);
+      expect(config.usesAdMob, false);
       expect(config.isKidsTargeted, false);
       expect(config.usesAnalytics, false);
+      expect(config.collectsDeviceIdentifiers, false);
     });
 
     test('copyWith updates values correctly', () {
@@ -21,7 +23,7 @@ void main() {
       expect(updated.appName, 'Test Game');
       expect(updated.hasAds, false);
       expect(updated.isKidsTargeted, true);
-      
+
       // Unchanged values should remain
       expect(updated.companyName, 'Your Company Name');
     });

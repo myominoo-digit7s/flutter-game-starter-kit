@@ -1,14 +1,15 @@
 # Flutter + Flame Game Starter Kit
 
-A comprehensive, production-ready 2D Game Starter Kit using Flutter and the Flame game engine. This kit provides a solid foundation for building 2D games, featuring a robust architecture for routing, state management, persistent storage, localization, audio, and AdMob integration.
+A Flutter and Flame 2D game starter template with a Demo Collector example, shared settings, localization, audio, storage, and optional AdMob and Firebase integrations. Release readiness depends on configuring and verifying the app for each game and target platform; this repository does not ship production signing credentials or Firebase configuration.
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Flutter SDK (latest stable)
-- Dart SDK
+- Flutter 3.41.2 stable is the CI and locally validated baseline (Dart 3.11.0).
+  `pubspec.yaml` requires Dart `^3.11.0`; other compatible Flutter versions
+  are not covered by the current CI run.
 - IDE of your choice (VS Code, Android Studio, IntelliJ)
 
 ### How to Run
@@ -18,156 +19,53 @@ flutter pub get
 flutter run
 ```
 
+AdMob and Firebase telemetry are disabled by default, so the demo runs without
+AdMob or Firebase project configuration. To exercise Google test ads, run
+`flutter run --dart-define=ENABLE_ADS=true`. To enable Firebase analytics and
+crash reporting, configure the native Firebase projects first, then run with
+`--dart-define=ENABLE_TELEMETRY=true`.
+
 ### How to Test
-The starter kit comes with a comprehensive suite of unit and component tests.
-```bash
-flutter test
-```
-You can also run the static analyzer:
-```bash
-flutter analyze
-```
+
+See the [testing guide](docs/features/testing.md) for the validation commands
+used by CI and the advisory repository-wide formatting policy.
+
+### Contribution and Release Preparation
+
+See [Contributing](CONTRIBUTING.md) for the pull request checks and
+[Release Preparation](docs/release-preparation.md) for Android signing, iOS
+prerequisites, versioning, and store verification. CI has no production
+credentials and does not build signed release artifacts or publish apps.
+
+The committed `pubspec.lock` keeps application dependencies reproducible;
+include intentional lockfile changes with dependency changes. The CI Flutter
+version is pinned at 3.41.2 and should be updated only after validation.
 
 ### Android Release Signing
 
-Debug builds work without release credentials. Before building a release APK or
-App Bundle, create `android/key.properties` locally with the following values:
-
-```properties
-storeFile=/path/to/your-upload-keystore.jks
-storePassword=your-store-password
-keyAlias=your-key-alias
-keyPassword=your-key-password
-```
-
-The keystore path is resolved relative to the `android/` directory unless it is
-absolute. `android/key.properties` is excluded from Git. Release builds fail
-with a configuration message when any value is missing; they never use the
-debug key. Do not put signing credentials or the keystore in version control.
+Android and iOS signing, platform identifiers, and release checks are covered
+in the canonical [release preparation guide](docs/release-preparation.md). The
+starter contains no production signing credentials.
 
 ---
 
-## 🎮 How to Add a New Game
+## 🎮 Create a New Game
 
-The starter kit uses a centralized game shell. To swap out the Demo Collector game for your own:
+Follow the [new game guide](docs/create-new-game-guide.md) to replace Demo
+Collector at the existing router factory, configure game identity and app
+branding, add assets, choose optional integrations, and build a debug APK.
 
-1. **Create a New Game Folder**
-   Create a new folder in `lib/games/` for your game (e.g., `lib/games/my_awesome_game/`).
-2. **Build Your Game Class**
-   Create your game class extending `BaseFlameGame`.
-   ```dart
-   import 'package:flutter_game_starter_kit/core/game/base_flame_game.dart';
+## Integrations and localization
 
-   class MyAwesomeGame extends BaseFlameGame {
-     MyAwesomeGame({required super.audioService})
-         : super(gameId: 'my_awesome_game', gameName: 'My Awesome Game');
-
-     @override
-     Future<void> onLoad() async {
-       await super.onLoad();
-       // Initialize your game components
-     }
-   }
-   ```
-3. **Connect to the Shell**
-   Open `lib/app/router/app_router.dart` and replace the game factory on the `/game` route.
-   ```dart
-   gameFactory: (audioService, analyticsService) => MyAwesomeGame(
-     audioService: audioService,
-     analyticsService: analyticsService,
-   ),
-   ```
-
-*(See `docs/create-new-game-guide.md` for an in-depth guide on the core game loop, spawning, scoring, and UI overlays.)*
-
----
-
-## 💰 How to Configure AdMob
-
-The starter kit comes pre-integrated with AdMob, using Test IDs by default so you can safely run and test your app without being penalized.
-
-To configure real AdMob for production:
-1. **Update AndroidManifest.xml**
-   Open `android/app/src/main/AndroidManifest.xml` and replace the test App ID with your real AdMob App ID.
-   ```xml
-   <meta-data
-       android:name="com.google.android.gms.ads.APPLICATION_ID"
-       android:value="YOUR_ADMOB_APP_ID"/>
-   ```
-2. **Update Info.plist (iOS)**
-   Open `ios/Runner/Info.plist` and add/update the `GADApplicationIdentifier` key.
-   ```xml
-   <key>GADApplicationIdentifier</key>
-   <string>YOUR_ADMOB_APP_ID</string>
-   ```
-3. **Set Production Ad Unit IDs**
-   Open `lib/core/ads/ad_unit_ids.dart` and replace the test banner, interstitial, and rewarded IDs with your production IDs. Ensure you use the environment checks correctly so test IDs are used during development.
-
----
-
-## 🌍 How to Add Localization
-
-The app uses `flutter_localizations` with ARB files for multi-language support. English, Myanmar, and Thai are included out-of-the-box.
-
-To add or modify translations:
-1. Open the `lib/l10n/` directory.
-2. Edit the respective `.arb` file (e.g., `app_en.arb` for English).
-3. Add a new key-value pair.
-   ```json
-   {
-     "myNewKey": "Hello World",
-     "@myNewKey": {
-       "description": "A welcome message"
-     }
-   }
-   ```
-4. Run the code generation:
-   *(Flutter automatically generates the localizations when you build, or you can manually trigger it with `flutter gen-l10n`)*
-5. Use the localized string in your UI:
-   ```dart
-   Text(AppLocalizations.of(context)!.myNewKey)
-   ```
-
-To add a brand new language:
-1. Add a new `.arb` file (e.g., `app_es.arb` for Spanish).
-2. Update the `supportedLocales` in `lib/app/app.dart`.
-3. Add the language option to the `LocaleCubit` mapping in `lib/core/localization/locale_cubit.dart`.
-
----
-
-## 🎵 How to Add Audio Assets
-
-The starter kit uses `flame_audio` managed by an `AudioService` that synchronizes with the user's Settings (Sound and Music toggles).
-
-1. Place your background music files in `assets/audio/bgm/`.
-2. Place your sound effect files in `assets/audio/sfx/`.
-3. Ensure your `pubspec.yaml` registers the assets directory:
-   ```yaml
-   flutter:
-     assets:
-       - assets/audio/bgm/
-       - assets/audio/sfx/
-   ```
-4. Play audio in your game utilizing the injected `AudioService`:
-   ```dart
-   // Play background music
-   audioService.playBgm('my_music.mp3');
-
-   // Play a sound effect
-   audioService.playSfx('jump.wav');
-   ```
-
----
+AdMob, Firebase telemetry, audio, localization, and storage are described in
+the [feature guides](docs/README.md). AdMob and Firebase are opt-in at runtime;
+compliance checklists are developer placeholders and do not establish legal
+or store-policy compliance.
 
 ## 📚 Documentation
 
-For deep dives into the architecture and specific features, explore the `docs/` folder:
-- [Game Core Architecture](docs/features/game-core.md)
-- [How to Create a New Game](docs/create-new-game-guide.md)
-- [AdMob Integration](docs/features/ads.md)
-- [Audio Service](docs/features/audio.md)
-- [Localization](docs/features/localization.md)
-- [Settings & Storage](docs/features/settings.md)
+Browse the [documentation index](docs/README.md) for the architecture, game
+creation, feature, testing, release, and compliance guides.
 
 ## License
 

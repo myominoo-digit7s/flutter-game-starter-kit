@@ -10,6 +10,9 @@ The Starter Kit uses `flutter_localizations` and `.arb` files to support multipl
 ## Architecture
 - `l10n.yaml` configures the localization generator.
 - ARB files are placed in `lib/l10n/`.
-- `flutter gen-l10n` generates `AppLocalizations` in `lib/.dart_tool/flutter_gen/gen_l10n`.
+- `l10n.yaml` sets `output-dir: lib/l10n` and
+  `output-localization-file: app_localizations.dart`. Run
+  `flutter gen-l10n` to generate `lib/l10n/app_localizations.dart` and its
+  locale-specific part files there.
 - `LocaleCubit` handles language switching and persists the user's choice using `SettingsRepository`.
 - `SettingsScreen` includes a dropdown to toggle between languages dynamically.

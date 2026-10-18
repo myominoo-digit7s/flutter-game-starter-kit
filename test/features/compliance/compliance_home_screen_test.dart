@@ -6,7 +6,9 @@ import 'package:flutter_game_starter_kit/core/compliance/compliance_repository.d
 import 'package:flutter_game_starter_kit/features/compliance/compliance_home_screen.dart';
 
 void main() {
-  testWidgets('ComplianceHomeScreen shows all seven compliance sections', (tester) async {
+  testWidgets('ComplianceHomeScreen shows default sections and disclaimer', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 4000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() => tester.view.resetPhysicalSize());
@@ -27,8 +29,9 @@ void main() {
     expect(find.text('Terms of Service'), findsOneWidget);
     expect(find.text('Data Safety'), findsOneWidget);
     expect(find.text('Content Rating'), findsOneWidget);
-    expect(find.text('Ads Disclosure'), findsOneWidget);
+    expect(find.text('Ads Disclosure'), findsNothing);
     expect(find.text('Children & Family Policy'), findsOneWidget);
     expect(find.text('Store Readiness'), findsOneWidget);
+    expect(find.textContaining('Developer checklist only.'), findsOneWidget);
   });
 }

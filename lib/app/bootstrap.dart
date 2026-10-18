@@ -16,6 +16,7 @@ import '../core/telemetry/telemetry_service.dart';
 import '../core/telemetry/telemetry_config.dart';
 import '../core/telemetry/telemetry_initializer.dart';
 import '../core/utils/app_logger.dart';
+import '../core/config/environment_config.dart';
 
 Future<
   (
@@ -41,22 +42,35 @@ bootstrap() async {
   final settingsRepository = SettingsRepository(storageService);
 
   final audioService = AudioService();
-  final adService = AdService();
+  final adService = AdService(enabled: EnvironmentConfig.adsEnabled);
   await adService.initialize();
 
   final telemetryService = await TelemetryInitializer.initialize(
-    const TelemetryConfig(),
+    const TelemetryConfig(firebaseEnabled: EnvironmentConfig.telemetryEnabled),
   );
 
-  final interstitialAdManager = InterstitialAdManager(analytics: telemetryService.analytics)..loadAd();
-  final rewardedAdManager = RewardedAdManager(analytics: telemetryService.analytics)..loadAd();
+  final interstitialAdManager = InterstitialAdManager(
+    analytics: telemetryService.analytics,
+    enabled: EnvironmentConfig.adsEnabled,
+  )..loadAd();
+  final rewardedAdManager = RewardedAdManager(
+    analytics: telemetryService.analytics,
+    enabled: EnvironmentConfig.adsEnabled,
+  )..loadAd();
 
-  final settingsCubit = SettingsCubit(settingsRepository, audioService, telemetryService.analytics)
-    ..loadSettings();
-  final localeCubit = LocaleCubit(settingsRepository, telemetryService.analytics)..loadLocale();
-  
+  final settingsCubit = SettingsCubit(
+    settingsRepository,
+    audioService,
+    telemetryService.analytics,
+  )..loadSettings();
+  final localeCubit = LocaleCubit(
+    settingsRepository,
+    telemetryService.analytics,
+  )..loadLocale();
+
   final complianceRepository = ComplianceRepository();
-  final complianceCubit = ComplianceCubit(repository: complianceRepository)..load();
+  final complianceCubit = ComplianceCubit(repository: complianceRepository)
+    ..load();
 
   return (
     settingsCubit,

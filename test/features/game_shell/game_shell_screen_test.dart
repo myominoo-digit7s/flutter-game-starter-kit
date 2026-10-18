@@ -50,10 +50,18 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          home: GameShellScreen(
-            gameFactory: (audio, analytics) => createdGame = _ReplacementGame(
-              audioService: audio,
-              analyticsService: analytics,
+          home: Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(padding: const EdgeInsets.only(top: 40, right: 24)),
+              child: GameShellScreen(
+                gameFactory: (audio, analytics) =>
+                    createdGame = _ReplacementGame(
+                      audioService: audio,
+                      analyticsService: analytics,
+                    ),
+              ),
             ),
           ),
         ),
@@ -64,12 +72,34 @@ void main() {
     expect(createdGame, isA<_ReplacementGame>());
     expect(find.byType(GameWidget<BaseFlameGame>), findsOneWidget);
     expect(find.byIcon(Icons.pause), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byIcon(Icons.pause)).dy,
+      greaterThanOrEqualTo(40),
+    );
 
     await tester.tap(find.byIcon(Icons.pause));
     await tester.pump();
 
     expect(createdGame!.status, GameStatus.paused);
     expect(find.text('Resume'), findsOneWidget);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(createdGame!.status, GameStatus.paused);
+
+    await tester.tap(find.text('Resume'));
+    await tester.pump();
+    expect(createdGame!.status, GameStatus.playing);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(createdGame!.status, GameStatus.playing);
+    expect(createdGame!.paused, isTrue);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(createdGame!.status, GameStatus.playing);
+    expect(createdGame!.paused, isFalse);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();

@@ -28,6 +28,15 @@ void main() {
       expect(timer.elapsed, 0.0);
     });
 
+    test('reset resumes a paused timer for the next run', () {
+      timer.pause();
+      timer.update(1.0);
+      timer.reset();
+
+      expect(timer.elapsed, 0.0);
+      expect(timer.isPaused, isFalse);
+    });
+
     test('paused timer does not spawn', () {
       timer.pause();
       timer.update(3.0);
