@@ -24,6 +24,7 @@ class SpawnTimer {
 
   void reset() {
     _elapsed = 0.0;
+    _isPaused = false;
   }
 
   void pause() {

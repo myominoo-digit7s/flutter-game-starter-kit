@@ -12,6 +12,7 @@ abstract class BaseFlameGame extends FlameGame {
   final AnalyticsService? analyticsService;
   final String gameId;
   final String gameName;
+  final DateTime Function() _now;
 
   GameStatus _status = GameStatus.initial;
   final ScoreManager scoreManager = ScoreManager();
@@ -21,17 +22,26 @@ abstract class BaseFlameGame extends FlameGame {
     required this.gameId,
     required this.gameName,
     this.analyticsService,
-  });
+    DateTime Function()? now,
+  }) : _now = now ?? DateTime.now;
 
   GameStatus get status => _status;
 
   // Callback when the game ends
   ValueChanged<GameResult>? onGameResult;
 
-  final DateTime _startTime = DateTime.now();
+  DateTime? _runStartedAt;
   Duration _gameDuration = Duration.zero;
 
   void startGame() {
+    if (_status == GameStatus.playing ||
+        _status == GameStatus.paused ||
+        _status == GameStatus.gameOver) {
+      return;
+    }
+
+    _runStartedAt = _now();
+    _gameDuration = Duration.zero;
     _status = GameStatus.playing;
     resumeEngine();
     overlays.remove('GameOver');
@@ -68,7 +78,10 @@ abstract class BaseFlameGame extends FlameGame {
 
       final isNewBestScore = scoreManager.isNewBestScore;
       scoreManager.updateBestScore();
-      _gameDuration = DateTime.now().difference(_startTime);
+      final runStartedAt = _runStartedAt;
+      _gameDuration = runStartedAt == null
+          ? Duration.zero
+          : _now().difference(runStartedAt);
 
       final result = GameResult(
         score: scoreManager.currentScore,
@@ -103,6 +116,7 @@ abstract class BaseFlameGame extends FlameGame {
   void resetGame() {
     _status = GameStatus.ready;
     scoreManager.reset();
+    _runStartedAt = null;
     _gameDuration = Duration.zero;
   }
 }

@@ -32,6 +32,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
   }
 
   void _handleGameResult(GameResult result) {
+    if (!mounted) return;
     context.read<InterstitialAdManager>().showAdIfAppropriate(
       AdPlacement.gameOver,
     );
@@ -47,7 +48,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
       _game!.onGameResult = _handleGameResult;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _game!.startGame();
+        if (mounted) _game?.startGame();
       });
       _isInitialized = true;
     }
@@ -64,79 +65,87 @@ class _GameShellScreenState extends State<GameShellScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: GameWidget(
-        game: _game!,
-        overlayBuilderMap: {
-          'HUD': (context, BaseFlameGame game) {
-            return Positioned(
-              top: 16,
-              right: 16,
-              child: IconButton(
-                icon: const Icon(Icons.pause, color: Colors.white),
-                onPressed: () => game.pauseGame(),
-              ),
-            );
-          },
-          'Pause': (context, BaseFlameGame game) {
-            return Center(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                color: Colors.black54,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.paused,
-                      style: const TextStyle(color: Colors.white, fontSize: 24),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => game.resumeGame(),
-                      child: Text(l10n.resume),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.pop(),
-                      child: Text(l10n.quit),
-                    ),
-                  ],
+      body: SafeArea(
+        child: GameWidget(
+          game: _game!,
+          overlayBuilderMap: {
+            'HUD': (context, BaseFlameGame game) {
+              return Positioned(
+                top: 16,
+                right: 16,
+                child: IconButton(
+                  icon: const Icon(Icons.pause, color: Colors.white),
+                  onPressed: () => game.pauseGame(),
                 ),
-              ),
-            );
-          },
-          'GameOver': (context, BaseFlameGame game) {
-            return Center(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                color: Colors.black87,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.gameOver,
-                      style: const TextStyle(color: Colors.white, fontSize: 24),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.score(game.scoreManager.currentScore),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => game.restartGame(),
-                      child: Text(l10n.playAgain),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.pop(),
-                      child: Text(l10n.menu),
-                    ),
-                  ],
+              );
+            },
+            'Pause': (context, BaseFlameGame game) {
+              return Center(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.black54,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.paused,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => game.resumeGame(),
+                        child: Text(l10n.resume),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => context.pop(),
+                        child: Text(l10n.quit),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            },
+            'GameOver': (context, BaseFlameGame game) {
+              return Center(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.black87,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.gameOver,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.score(game.scoreManager.currentScore),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => game.restartGame(),
+                        child: Text(l10n.playAgain),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => context.pop(),
+                        child: Text(l10n.menu),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           },
-        },
+        ),
       ),
     );
   }

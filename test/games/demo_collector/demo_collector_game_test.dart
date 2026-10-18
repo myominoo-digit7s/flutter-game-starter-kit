@@ -36,6 +36,18 @@ void main() {
       expect(game.children.whereType<PlayerComponent>().length, 1);
     });
 
+    test('player is repositioned when the game viewport resizes', () async {
+      final game = DemoCollectorGame(audioService: MockAudioService());
+      game.onGameResize(Vector2(500, 800));
+      await game.onLoad();
+
+      game.onGameResize(Vector2(700, 400));
+
+      final player = game.children.whereType<PlayerComponent>().single;
+      expect(player.position.x, 350);
+      expect(player.position.y, 300);
+    });
+
     test('Score updates when collectible caught', () async {
       final game = DemoCollectorGame(audioService: MockAudioService());
       game.onGameResize(Vector2(500, 800));
@@ -53,7 +65,10 @@ void main() {
 
       // Register dummy overlay builders so overlays.add() doesn't throw
       game.overlays.addEntry('HUD', (context, game) => const SizedBox.shrink());
-      game.overlays.addEntry('GameOver', (context, game) => const SizedBox.shrink());
+      game.overlays.addEntry(
+        'GameOver',
+        (context, game) => const SizedBox.shrink(),
+      );
 
       game.onGameResize(Vector2(500, 800));
       await game.onLoad();

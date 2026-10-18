@@ -15,6 +15,7 @@ class DemoCollectorGame extends BaseFlameGame
   late PlayerComponent _player;
   late SpawnerComponent _spawner;
   late TextComponent _scoreText;
+  bool _isSetup = false;
 
   final DifficultyScaler difficultyScaler = DifficultyScaler();
 
@@ -27,8 +28,16 @@ class DemoCollectorGame extends BaseFlameGame
     _setupGame();
   }
 
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    if (_isSetup) _positionPlayer();
+  }
+
   void _setupGame() {
-    _player = PlayerComponent()..position = Vector2(size.x / 2, size.y - 100);
+    _player = PlayerComponent();
+    _positionPlayer();
+    _isSetup = true;
     _spawner = SpawnerComponent();
 
     _scoreText = TextComponent(
@@ -82,14 +91,19 @@ class DemoCollectorGame extends BaseFlameGame
     super.restartGame();
 
     // Clear all existing entities
-    children.whereType<CollectibleComponent>().forEach(
+    children.whereType<CollectibleComponent>().toList().forEach(
       (c) => c.removeFromParent(),
     );
-    children.whereType<ObstacleComponent>().forEach(
+    children.whereType<ObstacleComponent>().toList().forEach(
       (c) => c.removeFromParent(),
     );
 
     difficultyScaler.reset();
+    _spawner.reset();
+    _positionPlayer();
+  }
+
+  void _positionPlayer() {
     _player.position = Vector2(size.x / 2, size.y - 100);
   }
 }

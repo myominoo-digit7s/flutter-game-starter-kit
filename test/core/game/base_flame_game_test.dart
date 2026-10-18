@@ -15,6 +15,9 @@ class _RecordingAnalyticsService extends NoopAnalyticsService {
   String? startedGameName;
   String? endedGameId;
   String? endedGameName;
+  int startCount = 0;
+  int endCount = 0;
+  final List<Duration> durations = [];
 
   @override
   Future<void> logGameStart({
@@ -22,6 +25,7 @@ class _RecordingAnalyticsService extends NoopAnalyticsService {
     required String gameName,
     int? levelNumber,
   }) async {
+    startCount++;
     startedGameId = gameId;
     startedGameName = gameName;
   }
@@ -36,14 +40,19 @@ class _RecordingAnalyticsService extends NoopAnalyticsService {
     required bool isNewBestScore,
     String? reason,
   }) async {
+    endCount++;
     endedGameId = gameId;
     endedGameName = gameName;
+    durations.add(duration);
   }
 }
 
 class _ReplacementGame extends BaseFlameGame {
-  _ReplacementGame({required super.audioService, super.analyticsService})
-    : super(gameId: 'replacement_game', gameName: 'Replacement Game');
+  _ReplacementGame({
+    required super.audioService,
+    super.analyticsService,
+    super.now,
+  }) : super(gameId: 'replacement_game', gameName: 'Replacement Game');
 }
 
 void main() {
@@ -98,5 +107,45 @@ void main() {
       expect(game.scoreManager.currentScore, 0);
       expect(analytics.startedGameId, 'replacement_game');
     });
+
+    test(
+      'duration uses each run start and duplicate transitions are ignored',
+      () async {
+        final analytics = _RecordingAnalyticsService();
+        final times = [
+          DateTime(2026, 1, 1, 0, 0),
+          DateTime(2026, 1, 1, 0, 0, 5),
+          DateTime(2026, 1, 1, 0, 1),
+          DateTime(2026, 1, 1, 0, 1, 2),
+        ];
+        final game = _ReplacementGame(
+          audioService: AudioService(soundEffectPlayer: (_) async {}),
+          analyticsService: analytics,
+          now: () => times.removeAt(0),
+        );
+        game.overlays.addEntry('HUD', (_, _) => const SizedBox.shrink());
+        game.overlays.addEntry('GameOver', (_, _) => const SizedBox.shrink());
+        game.overlays.addEntry('Pause', (_, _) => const SizedBox.shrink());
+        game.onGameResize(Vector2(500, 800));
+        await game.onLoad();
+
+        game.startGame();
+        game.startGame();
+        game.pauseGame();
+        game.resumeGame();
+        game.endGame();
+        game.endGame();
+        game.restartGame();
+        game.endGame();
+        game.endGame();
+
+        expect(analytics.startCount, 2);
+        expect(analytics.endCount, 2);
+        expect(analytics.durations, [
+          const Duration(seconds: 5),
+          const Duration(seconds: 2),
+        ]);
+      },
+    );
   });
 }
