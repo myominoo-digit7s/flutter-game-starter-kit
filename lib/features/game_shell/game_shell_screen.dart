@@ -5,20 +5,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/ads/ad_placement.dart';
 import '../../core/audio/audio_service.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../core/telemetry/telemetry_service.dart';
 import '../../core/ads/interstitial_ad_manager.dart';
 import '../../core/game/game_result.dart';
-import '../../games/demo_collector/demo_collector_game.dart';
+import '../../core/game/base_flame_game.dart';
 
 class GameShellScreen extends StatefulWidget {
-  const GameShellScreen({super.key});
+  final BaseFlameGame Function(AudioService, AnalyticsService) gameFactory;
+
+  const GameShellScreen({super.key, required this.gameFactory});
 
   @override
   State<GameShellScreen> createState() => _GameShellScreenState();
 }
 
 class _GameShellScreenState extends State<GameShellScreen> {
-  DemoCollectorGame? _game;
+  BaseFlameGame? _game;
 
   @override
   void initState() {
@@ -29,7 +32,9 @@ class _GameShellScreenState extends State<GameShellScreen> {
   }
 
   void _handleGameResult(GameResult result) {
-    context.read<InterstitialAdManager>().showAdIfAppropriate(AdPlacement.gameOver);
+    context.read<InterstitialAdManager>().showAdIfAppropriate(
+      AdPlacement.gameOver,
+    );
   }
 
   @override
@@ -38,10 +43,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
     if (_game == null) {
       final audioService = context.read<AudioService>();
       final telemetryService = context.read<TelemetryService>();
-      _game = DemoCollectorGame(
-        audioService: audioService,
-        analyticsService: telemetryService.analytics,
-      );
+      _game = widget.gameFactory(audioService, telemetryService.analytics);
       _game!.onGameResult = _handleGameResult;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -65,7 +67,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
       body: GameWidget(
         game: _game!,
         overlayBuilderMap: {
-          'HUD': (context, DemoCollectorGame game) {
+          'HUD': (context, BaseFlameGame game) {
             return Positioned(
               top: 16,
               right: 16,
@@ -75,7 +77,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
               ),
             );
           },
-          'Pause': (context, DemoCollectorGame game) {
+          'Pause': (context, BaseFlameGame game) {
             return Center(
               child: Container(
                 padding: const EdgeInsets.all(16),
@@ -102,7 +104,7 @@ class _GameShellScreenState extends State<GameShellScreen> {
               ),
             );
           },
-          'GameOver': (context, DemoCollectorGame game) {
+          'GameOver': (context, BaseFlameGame game) {
             return Center(
               child: Container(
                 padding: const EdgeInsets.all(16),

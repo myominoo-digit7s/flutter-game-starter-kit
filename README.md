@@ -28,6 +28,23 @@ You can also run the static analyzer:
 flutter analyze
 ```
 
+### Android Release Signing
+
+Debug builds work without release credentials. Before building a release APK or
+App Bundle, create `android/key.properties` locally with the following values:
+
+```properties
+storeFile=/path/to/your-upload-keystore.jks
+storePassword=your-store-password
+keyAlias=your-key-alias
+keyPassword=your-key-password
+```
+
+The keystore path is resolved relative to the `android/` directory unless it is
+absolute. `android/key.properties` is excluded from Git. Release builds fail
+with a configuration message when any value is missing; they never use the
+debug key. Do not put signing credentials or the keystore in version control.
+
 ---
 
 ## 🎮 How to Add a New Game
@@ -42,7 +59,8 @@ The starter kit uses a centralized game shell. To swap out the Demo Collector ga
    import 'package:flutter_game_starter_kit/core/game/base_flame_game.dart';
 
    class MyAwesomeGame extends BaseFlameGame {
-     MyAwesomeGame({required super.audioService});
+     MyAwesomeGame({required super.audioService})
+         : super(gameId: 'my_awesome_game', gameName: 'My Awesome Game');
 
      @override
      Future<void> onLoad() async {
@@ -52,9 +70,12 @@ The starter kit uses a centralized game shell. To swap out the Demo Collector ga
    }
    ```
 3. **Connect to the Shell**
-   Open `lib/features/game_shell/game_shell_screen.dart` and swap out the instantiation of the game.
+   Open `lib/app/router/app_router.dart` and replace the game factory on the `/game` route.
    ```dart
-   _game = MyAwesomeGame(audioService: audioService);
+   gameFactory: (audioService, analyticsService) => MyAwesomeGame(
+     audioService: audioService,
+     analyticsService: analyticsService,
+   ),
    ```
 
 *(See `docs/create-new-game-guide.md` for an in-depth guide on the core game loop, spawning, scoring, and UI overlays.)*

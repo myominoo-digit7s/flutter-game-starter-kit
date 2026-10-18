@@ -5,6 +5,7 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/shop/shop_screen.dart';
 import '../../features/leaderboard/leaderboard_screen.dart';
 import '../../features/game_shell/game_shell_screen.dart';
+import '../../games/demo_collector/demo_collector_game.dart';
 import '../../features/compliance/compliance_home_screen.dart';
 import '../../features/compliance/privacy_policy_screen.dart';
 import '../../features/compliance/terms_of_service_screen.dart';
@@ -24,7 +25,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.game,
-      builder: (context, state) => const GameShellScreen(),
+      builder: (context, state) => GameShellScreen(
+        gameFactory: (audioService, analyticsService) => DemoCollectorGame(
+          audioService: audioService,
+          analyticsService: analyticsService,
+        ),
+      ),
     ),
     GoRoute(
       path: AppRoutes.compliance,

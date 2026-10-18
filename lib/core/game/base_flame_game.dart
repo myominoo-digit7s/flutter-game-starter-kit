@@ -10,12 +10,16 @@ import 'score_manager.dart';
 abstract class BaseFlameGame extends FlameGame {
   final AudioService audioService;
   final AnalyticsService? analyticsService;
+  final String gameId;
+  final String gameName;
 
   GameStatus _status = GameStatus.initial;
   final ScoreManager scoreManager = ScoreManager();
 
   BaseFlameGame({
     required this.audioService,
+    required this.gameId,
+    required this.gameName,
     this.analyticsService,
   });
 
@@ -33,10 +37,10 @@ abstract class BaseFlameGame extends FlameGame {
     overlays.remove('GameOver');
     overlays.remove('Pause');
     overlays.add('HUD');
-    
+
     analyticsService?.logGameStart(
-      gameId: 'demo_collector',
-      gameName: 'Demo Collector',
+      gameId: gameId,
+      gameName: gameName,
       levelNumber: 1,
     );
   }
@@ -79,8 +83,8 @@ abstract class BaseFlameGame extends FlameGame {
       }
 
       analyticsService?.logGameOver(
-        gameId: 'demo_collector',
-        gameName: 'Demo Collector',
+        gameId: gameId,
+        gameName: gameName,
         score: result.score,
         bestScore: result.bestScore,
         duration: result.duration,

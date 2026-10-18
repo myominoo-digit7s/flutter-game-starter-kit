@@ -18,10 +18,8 @@ class DemoCollectorGame extends BaseFlameGame
 
   final DifficultyScaler difficultyScaler = DifficultyScaler();
 
-  DemoCollectorGame({
-    required super.audioService,
-    super.analyticsService,
-  });
+  DemoCollectorGame({required super.audioService, super.analyticsService})
+    : super(gameId: 'demo_collector', gameName: 'Demo Collector');
 
   @override
   Future<void> onLoad() async {

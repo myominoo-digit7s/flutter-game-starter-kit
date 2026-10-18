@@ -10,7 +10,8 @@ Create your main game class and extend `BaseFlameGame`.
 import '../../core/game/base_flame_game.dart';
 
 class MyAwesomeGame extends BaseFlameGame {
-  MyAwesomeGame({required super.audioService});
+  MyAwesomeGame({required super.audioService})
+      : super(gameId: 'my_awesome_game', gameName: 'My Awesome Game');
 
   @override
   Future<void> onLoad() async {
@@ -23,20 +24,20 @@ class MyAwesomeGame extends BaseFlameGame {
 ```
 
 ## 2. Connect Your Game to the UI Shell
-Open `lib/features/game_shell/game_shell_screen.dart`.
-Replace `DemoCollectorGame` with your `MyAwesomeGame`.
+Open `lib/app/router/app_router.dart`.
+Replace the `DemoCollectorGame` returned by the `/game` route's `gameFactory`.
 
 ```dart
-    if (!_isInitialized) {
-      final audioService = context.read<AudioService>();
-      final interstitialAdManager = context.read<InterstitialAdManager>();
-      
-      _game = MyAwesomeGame(audioService: audioService);
-      // ...
-    }
+gameFactory: (audioService, analyticsService) => MyAwesomeGame(
+  audioService: audioService,
+  analyticsService: analyticsService,
+),
 ```
 
-Update the overlay maps in `GameWidget` to cast `game` to your new class.
+The shared shell's HUD, pause, and game-over overlays use `BaseFlameGame`, so
+they work with the replacement game without changing their types. Add a
+game-specific overlay only when your game needs behavior beyond those shared
+overlays.
 
 ## 3. Utilize Core Managers
 Inside your game class, you have access to:
