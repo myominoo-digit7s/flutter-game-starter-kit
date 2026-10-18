@@ -21,10 +21,12 @@ You can contribute in many ways:
 
 Please make sure you have the following installed:
 
-* Flutter SDK, latest stable version recommended
-* Dart SDK
+* Flutter 3.41.2 stable for the same toolchain used by CI (Dart 3.11.0)
 * Android Studio, VS Code, or your preferred IDE
 * Git
+
+`pubspec.yaml` requires Dart `^3.11.0`. CI pins Flutter 3.41.2; other Flutter
+versions may satisfy that constraint but are not covered by this CI workflow.
 
 ## Project Setup
 
@@ -50,13 +52,18 @@ flutter run
 Run tests:
 
 ```bash
+flutter pub get --enforce-lockfile
+flutter analyze
 flutter test
+flutter build apk --debug
 ```
 
-Run static analysis:
+The repository-wide Dart format check is currently advisory in CI while the
+existing formatting baseline is being addressed. Format Dart files you change
+before submitting them:
 
 ```bash
-flutter analyze
+dart format path/to/changed_file.dart
 ```
 
 ## Development Guidelines
@@ -103,10 +110,11 @@ Refactor game shell initialization
 Before opening a pull request, please make sure:
 
 1. Your code runs successfully.
-2. `flutter analyze` passes without major issues.
-3. `flutter test` passes.
-4. Your changes are focused on one topic or issue.
-5. Documentation is updated if needed.
+2. Dependency resolution with `flutter pub get --enforce-lockfile` succeeds.
+3. `flutter analyze`, `flutter test`, and `flutter build apk --debug` pass.
+4. Dart files you changed are formatted.
+5. Your changes are focused on one topic or issue.
+6. Documentation is updated if needed.
 
 When opening a pull request, please include:
 
@@ -165,6 +173,11 @@ Current localization support includes:
 Please do not open a public issue for sensitive security problems.
 
 If you discover a security issue, please contact the maintainer privately.
+
+Do not add signing keys, `android/key.properties`, Firebase configuration,
+production AdMob IDs, or other credentials to a pull request. See
+[`docs/release-preparation.md`](docs/release-preparation.md) for the local
+release process and its platform prerequisites.
 
 ## License
 

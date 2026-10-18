@@ -9,5 +9,10 @@ Currently, audio files might not be provided. `AudioService` catches any excepti
 - `SettingsCubit` calls `AudioService.updateSettings()` to keep BGM/SFX toggles synced.
 - `BaseFlameGame` receives `AudioService` in its constructor, allowing gameplay logic to trigger sounds directly via `game.audioService.playSfx('explosion.wav')`.
 
-## Pre-fetching
-The `prefetch()` method can be called during initial loading to cache audio assets before the game starts.
+## Prefetch placeholder
+
+`AudioService.prefetch()` is currently a no-op placeholder: it does not load or
+cache audio assets. Add and register licensed files under `assets/audio/` as
+described in the [new game guide](../create-new-game-guide.md). Missing audio
+files are handled by the service's safe playback boundary; do not rely on
+prefetching to make them available.

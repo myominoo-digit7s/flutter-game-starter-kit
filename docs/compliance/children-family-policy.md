@@ -1,17 +1,23 @@
 # Children & Family Policy Guide
 
-## Target Audience Review
-You must declare your target audience in the store console.
-- **Kids-Targeted**: Primary audience is children under 13.
-- **Mixed Audience**: Appeals to both children and adults.
-- **Not for Kids**: Only targeted at adults.
+## Audience and age ratings
 
-## Kids-Targeted Games
-If your game is kids-targeted:
-- Do not collect precise location data.
-- Do not collect personal identifiers without parental consent.
-- Ensure your privacy policy includes a specific section for Children's Privacy.
-- All ad networks must be family-certified.
+Declare the audience and age-rating information requested by each store. Do
+not assume one universal age threshold: store categories, applicable laws,
+and requirements can differ by platform and region. Google Play's target
+audience and Families requirements are separate from Apple's age-rating and
+App Store review processes.
 
-## External Links and Content
-Use a parental gate (e.g., "What is 5 x 6?") before allowing the user to tap external links to social media, other apps, or websites. Ensure all in-game content is age-appropriate.
+For Android, review the current [Google Play Families
+Policy](https://support.google.com/googleplay/android-developer/answer/9893335)
+and target-audience requirements for the app's actual audience. Mixed-audience
+apps may have additional requirements, including a neutral age screen in
+applicable cases. If ads are shown to children or users of unknown age, check
+the current policy's requirements for ad SDKs and content. This starter kit
+does not implement audience screening or child-directed ad request handling.
+
+For iOS, answer App Store Connect's age-rating questions for the actual app
+and review the current [Apple age-rating guidance](https://developer.apple.com/help/app-store-connect/manage-app-information/set-an-app-age-rating/).
+Assess privacy, external links, and any audience-specific obligations for the
+game and the regions where it will be offered. This checklist is not legal
+advice or a substitute for the stores' current requirements.

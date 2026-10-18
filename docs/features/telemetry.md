@@ -1,56 +1,36 @@
-# Telemetry (Analytics & Crash Reporting)
+# Telemetry (Analytics and Crash Reporting)
 
-This game starter kit includes a reusable Telemetry module that provides integrated Analytics and Crash Reporting via Firebase. It gracefully degrades to a "Noop" implementation (which just logs to the console) when Firebase is disabled or fails to initialize.
+Firebase analytics and crash reporting are optional and disabled by default.
+`TelemetryInitializer` returns the existing no-op analytics and crash-reporting
+services when Firebase is disabled. Game and settings code can continue calling
+the shared analytics API without requiring Firebase.
 
-## Features
-- **Crash Reporting:** Automatically captures Flutter errors, Platform errors, and manual error logs.
-- **Session Tracking:** Measures session lengths automatically using `AnalyticsObserver`.
-- **Game Events:** Tracks game start, game over, level complete, and level failed with scores and durations.
-- **Ad Events:** Tracks ad impressions, rewarded ad completions, and failures.
-- **Economy Events:** Tracks coins earned/spent and skins unlocked.
-- **Settings Events:** Tracks when users change sound, music, or language.
+## Enable Firebase
 
-## Architecture
+1. Create/register the game app in Firebase for each platform you ship.
+2. Add the platform configuration using the official FlutterFire/Firebase
+   setup for this project. The repository does not include a Firebase project
+   configuration.
+3. Run/build with `--dart-define=ENABLE_TELEMETRY=true`.
 
-The Telemetry module sits in `lib/core/telemetry/`. It orchestrates two independent services:
-- `AnalyticsService`
-- `CrashReportingService`
+For example:
 
-These interfaces are implemented by:
-- `FirebaseAnalyticsService` & `FirebaseCrashReportingService` (Production)
-- `NoopAnalyticsService` & `NoopCrashReportingService` (Development/Fallback)
-
-## Setup
-In `lib/app/bootstrap.dart`, the TelemetryService is initialized based on the `TelemetryConfig`:
-
-```dart
-final telemetryService = await TelemetryInitializer.initialize(
-  const TelemetryConfig(
-    firebaseEnabled: true,
-    useNoopWhenFirebaseUnavailable: true,
-  ),
-);
+```bash
+flutter run --dart-define=ENABLE_TELEMETRY=true
 ```
 
-If `google-services.json` or `GoogleService-Info.plist` is missing, the initializer catches the initialization error and seamlessly falls back to Noop mode to prevent crashes during development.
+If Firebase initialization fails and the existing fallback is enabled, the
+initializer logs a development diagnostic and returns no-op services. Do not
+mistake that fallback for successful telemetry delivery.
 
-## Usage
-Access the `AnalyticsService` via dependency injection, or read it from the context if provided by a `RepositoryProvider`:
+Analytics and crash collection settings are configured in
+`lib/core/analytics/analytics_config.dart` and
+`lib/core/crash_reporting/crash_reporting_config.dart`. The app currently
+initializes Firebase as a single optional telemetry integration; it does not
+provide a general provider registry.
 
-```dart
-final analytics = context.read<TelemetryService>().analytics;
-
-analytics.logGameStart(
-  gameId: 'space_shooter',
-  gameName: 'Space Shooter',
-  levelNumber: 1,
-);
-```
-
-The `DemoCollectorGame` and `AdManagers` are automatically configured to emit standardized events using `AnalyticsEventName` and `AnalyticsParameter`.
-
-## Compliance
-**Important:** Firebase Analytics and Crashlytics collect device identifiers. Make sure you:
-1. Update your Privacy Policy to disclose Firebase usage.
-2. Complete your Data Safety declaration on Google Play/App Store to reflect the data collected.
-3. If your game targets children, ensure you are using family-friendly ads and analytics configurations that do not collect advertising identifiers unprompted.
+Firebase analytics and Crashlytics may collect device or diagnostic data.
+Review the actual SDK behavior, audience, consent obligations, privacy policy,
+and store data declarations for your game before enabling them in a release.
+The compliance screens are starter checklists, not legal advice or a compliance
+guarantee.

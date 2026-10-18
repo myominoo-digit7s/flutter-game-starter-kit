@@ -1,69 +1,46 @@
-# AdMob Architecture
+# AdMob Integration
 
-The Flutter Game Starter Kit includes a ready-to-use AdMob architecture built around the `google_mobile_ads` package. It provides safe handling of Banner, Interstitial, and Rewarded ads.
+AdMob is optional and disabled by default. This lets the demo run without
+initializing the Mobile Ads SDK or making ad requests.
 
-## Configuration & Environment Variables
+## Enable development test ads
 
-By default, the app uses **Google's official Test Ad Unit IDs**. During development, you should *always* use test ads to prevent your AdMob account from being flagged for invalid traffic.
+Pass the build-time flag when running or building a development app:
 
-When you are ready to deploy your app, you should inject your production Ad Unit IDs via `--dart-define` at compile time. The architecture automatically falls back to test IDs if production IDs are not provided or if the app is built in debug mode.
-
-### How to Build with Production Ads:
 ```bash
-flutter build apk \
+flutter run --dart-define=ENABLE_ADS=true
+```
+
+Debug and profile builds use Google's official test ad unit IDs. The existing
+placement policy suppresses banners during gameplay and game-over overlays.
+Interstitial and rewarded managers retain their existing callbacks when ads
+are enabled.
+
+## Release configuration
+
+When release ads are enabled, the current implementation requires production
+IDs for **all three formats**—banner, interstitial, and rewarded—for the target
+platform. Supply them at build time:
+
+```bash
+flutter build appbundle \
+  --dart-define=ENABLE_ADS=true \
   --dart-define=BANNER_AD_ID_ANDROID=ca-app-pub-xxxx/xxxx \
   --dart-define=INTERSTITIAL_AD_ID_ANDROID=ca-app-pub-xxxx/xxxx \
   --dart-define=REWARDED_AD_ID_ANDROID=ca-app-pub-xxxx/xxxx
 ```
-*(Repeat the equivalent for iOS variables: `BANNER_AD_ID_IOS`, etc.)*
 
-## Components
+Use the `_IOS` names for iOS builds. `AdUnitIds.hasProductionIds` checks all
+three platform-specific values. If any one is missing, release ad
+initialization and requests are skipped with a debug diagnostic; the code does
+not fall back to Google's test unit IDs. Replace the sample
+AdMob **App IDs** in `android/app/src/main/AndroidManifest.xml` and
+`ios/Runner/Info.plist` for the app as well. These public app/unit identifiers
+are not secrets, but they must identify the correct AdMob app and placement.
 
-### 1. `AdService`
-Initializes the Google Mobile Ads SDK on app startup.
-
-### 2. `AdUnitIds`
-A utility class that resolves the correct Ad Unit ID depending on the current `Platform` (iOS/Android) and build mode (Debug/Release).
-
-### 3. `AdPlacement` & `AdPlacementPolicy`
-`AdPlacement` is an enum defining all the screens and locations where ads *could* potentially appear (e.g., `homeScreen`, `gameplay`, `gameOver`).
-
-`AdPlacementPolicy` contains the business logic to determine if an ad *should* appear. For example, it enforces the rule: **Do not show banner ads during gameplay by default**.
-
-### 4. `BannerAdWidget`
-A reusable Flutter widget that requests and displays a `BannerAd`. It takes an `AdPlacement` and respects the `AdPlacementPolicy`. If the policy dictates no ad should be shown, it safely returns an empty `SizedBox.shrink()`.
-
-**Usage:**
-```dart
-const BannerAdWidget(placement: AdPlacement.homeScreen),
-```
-
-### 5. `InterstitialAdManager`
-Preloads and manages fullscreen interstitial ads. It automatically preloads the next ad once the current one is dismissed.
-
-**Usage:**
-```dart
-final interstitialManager = context.read<InterstitialAdManager>();
-interstitialManager.showAdIfAppropriate(
-  AdPlacement.gameOver,
-  onComplete: () {
-    // Navigate back to menu or restart game
-  },
-);
-```
-
-### 6. `RewardedAdManager`
-Preloads and manages rewarded video ads. Useful for offering the player a "Revive" or bonus coins in the shop.
-
-**Usage:**
-```dart
-final rewardedManager = context.read<RewardedAdManager>();
-rewardedManager.showAd(
-  onUserEarnedReward: () {
-    // Grant player coins or revive them
-  },
-  onAdClosed: () {
-    // Resume game flow
-  },
-);
-```
+AdMob initialization and placements are implemented in `AdService`,
+`AdUnitIds`, `AdPlacementPolicy`, `BannerAdWidget`, and the interstitial and
+rewarded managers under `lib/core/ads/`. This integration does not implement
+consent collection or determine whether a particular audience, region, or
+release meets privacy and store requirements. Configure consent and disclosure
+for the actual game when applicable.

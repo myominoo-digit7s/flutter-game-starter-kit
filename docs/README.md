@@ -1,44 +1,30 @@
-# Flutter + Flame 2D Game Starter Kit
+# Project Documentation
 
-This is Phase 1 of a reusable Flutter + Flame 2D Game Starter Kit. It provides a foundation for future 2D games to reuse core game components, routing, storage, settings, and common screens.
+This is a single-game Flutter + Flame starter template. Demo Collector is the
+example game selected at the app router's game factory. AdMob and Firebase
+telemetry are optional and disabled by default.
 
-## Tech Stack
-- Flutter (latest stable)
-- Dart (latest stable)
-- flame
-- flutter_bloc
-- equatable
-- go_router
-- shared_preferences
+## Start here
 
-## Folder Structure Summary
-- `lib/app/`: Application bootstrap, routing, and lifecycle management.
-- `lib/core/`: Reusable, generic pieces across the entire app (config, game logic abstractions, settings logic, storage wrappers, themes, utils).
-- `lib/features/`: UI screens divided by domain (home, game_shell, settings, shop, leaderboard).
-- `lib/games/`: Contains the actual game implementation. In this phase, `demo_placeholder`.
+- [Create a new game](create-new-game-guide.md) — replace the demo, configure
+  game identity and app branding, register assets, select integrations, and
+  build a debug APK.
+- [Architecture](architecture.md) — shared modules and project boundaries.
+- [Game core](features/game-core.md) — shared Flame base and game utilities.
+- [Routing](features/routing.md) — app routes and the game shell.
+- [Settings](features/settings.md) — settings state and controls.
+- [Storage](features/storage.md) — persistence boundaries and stored values.
+- [Localization](features/localization.md) — ARB files and runtime language
+  selection.
+- [Audio](features/audio.md) — optional Flame audio and settings integration.
+- [AdMob](features/ads.md) — opt-in SDK configuration and ad unit IDs.
+- [Telemetry](features/telemetry.md) — optional Firebase and no-op behavior.
+- [Testing](features/testing.md) — local validation commands and test layout.
+- [Compliance checklist](compliance/README.md) — developer checklist
+  placeholders, not legal advice or a compliance guarantee.
 
-## Phase 1 Includes
-- Core Flame Game abstraction (`BaseFlameGame`).
-- Essential managers: `ScoreManager`, `LevelManager`, `DifficultyScaler`, `SpawnTimer`.
-- UI Placeholders: Home, Game Shell, Settings, Shop, Leaderboard screens.
-- Basic Routing via `go_router`.
-- Local Storage wrapper via `shared_preferences`.
-- Global settings state using `flutter_bloc`.
-
-## Future Phases
-Future phases will implement:
-- AdMob integration
-- AudioService
-- Full Localization
-- Complete game loop
-
-## How to run
-```bash
-flutter pub get
-flutter run
-```
-
-## How to test
-```bash
-flutter test
-```
+The root [README](../README.md) covers project setup and quick start.
+Production signing, native iOS builds, and store submissions must be
+configured and verified for each game. See the
+[release preparation guide](release-preparation.md) for the validated Flutter
+baseline, Android/iOS prerequisites, signing, versioning, and store checks.
