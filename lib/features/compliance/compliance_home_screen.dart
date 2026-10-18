@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router/app_routes.dart';
 import '../../../core/compliance/compliance_cubit.dart';
 import '../../../core/compliance/compliance_status.dart';
+import 'widgets/compliance_warning_box.dart';
 import 'widgets/compliance_section_card.dart';
 
 class ComplianceHomeScreen extends StatelessWidget {
@@ -23,6 +24,12 @@ class ComplianceHomeScreen extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
+              const ComplianceWarningBox(
+                message:
+                    'Developer checklist only. Example settings, policy text, '
+                    'and completion statuses are placeholders, not legal '
+                    'advice or proof that your game complies with store rules.',
+              ),
               ComplianceSectionCard(
                 title: 'Privacy Policy',
                 description: "Review and host your game's privacy policy.",

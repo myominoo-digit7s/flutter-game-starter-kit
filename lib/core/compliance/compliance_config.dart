@@ -87,42 +87,49 @@ class ComplianceConfig extends Equatable {
       usesCrashReporting: usesCrashReporting ?? this.usesCrashReporting,
       usesInAppPurchases: usesInAppPurchases ?? this.usesInAppPurchases,
       isKidsTargeted: isKidsTargeted ?? this.isKidsTargeted,
-      includesChildrenInAudience: includesChildrenInAudience ?? this.includesChildrenInAudience,
+      includesChildrenInAudience:
+          includesChildrenInAudience ?? this.includesChildrenInAudience,
       collectsPersonalData: collectsPersonalData ?? this.collectsPersonalData,
-      collectsDeviceIdentifiers: collectsDeviceIdentifiers ?? this.collectsDeviceIdentifiers,
-      collectsApproximateLocation: collectsApproximateLocation ?? this.collectsApproximateLocation,
-      collectsPreciseLocation: collectsPreciseLocation ?? this.collectsPreciseLocation,
-      supportsAccountCreation: supportsAccountCreation ?? this.supportsAccountCreation,
-      supportsUserGeneratedContent: supportsUserGeneratedContent ?? this.supportsUserGeneratedContent,
-      supportsPushNotifications: supportsPushNotifications ?? this.supportsPushNotifications,
+      collectsDeviceIdentifiers:
+          collectsDeviceIdentifiers ?? this.collectsDeviceIdentifiers,
+      collectsApproximateLocation:
+          collectsApproximateLocation ?? this.collectsApproximateLocation,
+      collectsPreciseLocation:
+          collectsPreciseLocation ?? this.collectsPreciseLocation,
+      supportsAccountCreation:
+          supportsAccountCreation ?? this.supportsAccountCreation,
+      supportsUserGeneratedContent:
+          supportsUserGeneratedContent ?? this.supportsUserGeneratedContent,
+      supportsPushNotifications:
+          supportsPushNotifications ?? this.supportsPushNotifications,
       allowsExternalLinks: allowsExternalLinks ?? this.allowsExternalLinks,
     );
   }
 
   @override
   List<Object?> get props => [
-        appName,
-        companyName,
-        contactEmail,
-        privacyPolicyUrl,
-        termsOfServiceUrl,
-        effectiveDate,
-        hasAds,
-        usesAdMob,
-        usesAnalytics,
-        usesCrashReporting,
-        usesInAppPurchases,
-        isKidsTargeted,
-        includesChildrenInAudience,
-        collectsPersonalData,
-        collectsDeviceIdentifiers,
-        collectsApproximateLocation,
-        collectsPreciseLocation,
-        supportsAccountCreation,
-        supportsUserGeneratedContent,
-        supportsPushNotifications,
-        allowsExternalLinks,
-      ];
+    appName,
+    companyName,
+    contactEmail,
+    privacyPolicyUrl,
+    termsOfServiceUrl,
+    effectiveDate,
+    hasAds,
+    usesAdMob,
+    usesAnalytics,
+    usesCrashReporting,
+    usesInAppPurchases,
+    isKidsTargeted,
+    includesChildrenInAudience,
+    collectsPersonalData,
+    collectsDeviceIdentifiers,
+    collectsApproximateLocation,
+    collectsPreciseLocation,
+    supportsAccountCreation,
+    supportsUserGeneratedContent,
+    supportsPushNotifications,
+    allowsExternalLinks,
+  ];
 }
 
 final defaultComplianceConfig = ComplianceConfig(
@@ -132,15 +139,15 @@ final defaultComplianceConfig = ComplianceConfig(
   privacyPolicyUrl: 'https://example.com/privacy-policy',
   termsOfServiceUrl: 'https://example.com/terms',
   effectiveDate: DateTime(2026, 1, 1),
-  hasAds: true,
-  usesAdMob: true,
+  hasAds: false,
+  usesAdMob: false,
   usesAnalytics: false,
   usesCrashReporting: false,
   usesInAppPurchases: false,
   isKidsTargeted: false,
   includesChildrenInAudience: false,
   collectsPersonalData: false,
-  collectsDeviceIdentifiers: true,
+  collectsDeviceIdentifiers: false,
   collectsApproximateLocation: false,
   collectsPreciseLocation: false,
   supportsAccountCreation: false,

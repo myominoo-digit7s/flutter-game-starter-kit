@@ -12,7 +12,7 @@ class TelemetryConfig extends Equatable {
   const TelemetryConfig({
     this.analyticsConfig = const AnalyticsConfig(),
     this.crashReportingConfig = const CrashReportingConfig(),
-    this.firebaseEnabled = true,
+    this.firebaseEnabled = false,
     this.useNoopWhenFirebaseUnavailable = true,
   });
 
@@ -26,15 +26,16 @@ class TelemetryConfig extends Equatable {
       analyticsConfig: analyticsConfig ?? this.analyticsConfig,
       crashReportingConfig: crashReportingConfig ?? this.crashReportingConfig,
       firebaseEnabled: firebaseEnabled ?? this.firebaseEnabled,
-      useNoopWhenFirebaseUnavailable: useNoopWhenFirebaseUnavailable ?? this.useNoopWhenFirebaseUnavailable,
+      useNoopWhenFirebaseUnavailable:
+          useNoopWhenFirebaseUnavailable ?? this.useNoopWhenFirebaseUnavailable,
     );
   }
 
   @override
   List<Object?> get props => [
-        analyticsConfig,
-        crashReportingConfig,
-        firebaseEnabled,
-        useNoopWhenFirebaseUnavailable,
-      ];
+    analyticsConfig,
+    crashReportingConfig,
+    firebaseEnabled,
+    useNoopWhenFirebaseUnavailable,
+  ];
 }
